@@ -1,5 +1,6 @@
 require(shiny)
 require(shinydashboard)
+require(shinycssloaders)
 require(dplyr)
 require(DBI)
 require(RSQLite)
