@@ -30,9 +30,7 @@ sidebar <- dashboardSidebar(
     menuItem("Welkom!",
              tabName = "home_tab"),
     menuItem("Vluchtinformatie",
-             tabName = "flights_tab"),
-    HTML("<h4><b>>>>>Inputs</b></h4>")
-    
+             tabName = "flights_tab")
   )
 )
 
@@ -43,10 +41,10 @@ body <- dashboardBody(
   tabItems(
     tabItem(tabName = "home_tab",
             box(id = "welkom_note_box",
-                   width = 6,
-                   title = HTML('<h3 style="text-align:center">Welkom in de NYC Dashboard <h3><br> <h4 style="text-align:center">Al de informatie over je vluchten vanuit NYC in één plek!</h4><br><br>'),
+                   width = 12,
+                   title = HTML(printTitle),
                    tabPanel("",
-                            "Bienvenidos todos"))),
+                            HTML(printGreeting)))),
     tabItem(tabName = "flights_tab",
             box(width = 3,
                 numericInput("flight_number",
