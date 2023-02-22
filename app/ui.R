@@ -47,13 +47,26 @@ body <- dashboardBody(
                             HTML(printGreeting)))),
     tabItem(tabName = "flights_tab",
             box(width = 3,
+                selectInput("origin", 
+                            "Van", 
+                            choices = c('')
+                            
+                )),
+            box(width = 3,
                 numericInput("flight_number",
                              "Vluchtnummer",
                              min = 1,
                              value = NULL
                              )),
+            
+            box(width = 3,
+                numericInput("overig",
+                             "Overig",
+                             min = 1,
+                             value = NULL
+                )),
             box(width = 9,
-                tableOutput("flights_table") %>% withSpinner()))
+                DTOutput("flights_table") %>% withSpinner()))
     ) # Close tabItems
   ) # Close dasboardBody
 

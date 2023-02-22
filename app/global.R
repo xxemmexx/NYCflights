@@ -1,10 +1,14 @@
 require(shiny)
 require(shinydashboard)
 require(shinycssloaders)
+require(lubridate)
 require(dplyr)
+require(DT)
 require(DBI)
 require(RSQLite)
 
+# Define paths and formats
+sdISO <- stamp_date("2018-09-26", quiet = TRUE)
 localDBPath <- "data/nyc.sqlite3"
 
 # Connect to database when app is launched
