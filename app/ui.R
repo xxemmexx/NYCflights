@@ -29,6 +29,8 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Welkom!",
              tabName = "home_tab"),
+    menuItem("Vliegvelddrukte",
+             tabName = "drukte_tab"),
     menuItem("Destinaties",
              tabName = "map_tab"),
     menuItem("Vluchtinformatie",
@@ -47,6 +49,19 @@ body <- dashboardBody(
                    title = HTML(printTitle),
                    tabPanel("",
                             HTML(printGreeting)))),
+    tabItem(tabName = "drukte_tab",
+            box(width = 3,
+                dateRangeInput("date_zoom",
+                               label = "Daten",
+                               start = "2013-01-01",
+                               end = "2013-02-01",
+                               separator = "t/m",
+                               language = "nl")),
+            box(width = 12,
+                plotOutput("occupancy_plot") %>% withSpinner())
+            # box(width = 9,
+            #     DTOutput("occupancy_table") %>% withSpinner())
+            ),
     tabItem(tabName = "map_tab",
             fluidRow(
               box(width = 3,

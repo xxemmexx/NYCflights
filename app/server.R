@@ -1,5 +1,55 @@
 server <- function(input, output, session) {
+  #-----------------------------------------------------------------------------
+  # Vliegvelddrukte
+  #-----------------------------------------------------------------------------
   
+  seats <- reactive({
+    conn %>%
+      dbGetQuery(writeQueryForSeats())
+  })
+  
+  actualOccupancy <- reactive({
+    seats() %>%
+      transmute(origin,
+                date = ymd_hms(time_hour) %>% as.Date(),
+                dayOfYear = yday(date),
+                occupancy = computeOccupancy(date, as.numeric(seats))) %>%
+      filter(between(date, 
+                     ymd(input$date_zoom[1]), 
+                     ymd(input$date_zoom[2]))) %>%
+      group_by(dayOfYear) %>%
+      summarise(nettoccupied = sum(occupancy)) %>%
+      ungroup()
+    
+  })
+  
+  # output$occupancy_table <- renderDT({
+  #   actualOccupancy() %>%
+  #     datatable(rownames = FALSE,
+  #               colnames = c('Van', 'Datum', 'Day Index', 'Seats'),
+  #               selection = "none",
+  #               class = "compact",
+  #               options = list(scrollX = TRUE,
+  #                              dom = 'tp'
+  #               )
+  #     )
+  # })
+  
+  output$occupancy_plot <- renderPlot({
+    actualOccupancy() %>%
+      ggplot(aes(x = dayOfYear, y = nettoccupied)) +
+      geom_point()
+  })
+  
+  tr <- tribble(~a, ~b,
+          1, 3,
+          1, 6,
+          2, 5,
+          2, 19)
+  
+  tr %>%
+    group_by(a) %>%
+    summarise(n = sum(b))
   #-----------------------------------------------------------------------------
   # Destinaties
   #-----------------------------------------------------------------------------

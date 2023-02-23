@@ -1,9 +1,35 @@
+computeOccupancy <- function(aDate, numberOfSeats) {
+  case_when(
+    aDate < ymd('2013-06-29') ~ floor(.75*numberOfSeats),
+    aDate > ymd('2013-09-01') ~ floor(.75*numberOfSeats),
+    TRUE ~ numberOfSeats
+  )
+}
+
+
 jsHeader <- JS("function(settings, json) {",
                "$(this.api().table().header()).css({'background-color': '#2F4F4F', 'color': '#FFF0F5'});",
                "}")
 
-writeQueryForFlightsWithFilters <- function(aFlight = NULL,
-                                            origins = character(0)) {
+writeQueryForDestinations <- function(anOrigin) {
+  
+  query <- "SELECT faa, name, lat, lon
+  FROM airports 
+  WHERE faa IN 
+  (
+    SELECT DISTINCT dest 
+    FROM
+    (
+      SELECT * 
+        FROM flights 
+      WHERE origin = ?origin
+    ));"
+  
+  
+  sqlInterpolate(ANSI(), query, origin = anOrigin)
+}
+
+writeQueryForFlightsWithFilters <- function(aFlight, origins) {
   
   # Write base select statement with no clauses
   baseQuery <- "SELECT flight_id, time_hour, dep_time, sched_dep_time, dep_delay, arr_time,
@@ -25,27 +51,22 @@ writeQueryForFlightsWithFilters <- function(aFlight = NULL,
   
   # Decide how to insert the query parameters
   if(needsFlightFilter & needsOriginFilter) {
+    
     sqlInterpolate(ANSI(), query, .dots = list(flight = aFlight, origins = SQL(origins)))
+    
   } else if (needsFlightFilter & !needsOriginFilter) {
+    
     sqlInterpolate(ANSI(), query, flight = aFlight)
+    
   } else if (!needsFlightFilter & needsOriginFilter) {
+    
     sqlInterpolate(ANSI(), query, origins = SQL(origins))
+    
   } else {
+    
     query
   }
 
-}
-
-
-writeWhereClause <- function(needsFlightFilter,
-                             needsOriginFilter) {
-  
-  case_when(
-    needsFlightFilter & needsOriginFilter ~ " WHERE flight = ?flight AND origin IN ?origins;",
-    needsFlightFilter & !needsOriginFilter ~ " WHERE flight = ?flight;",
-    !needsFlightFilter & needsOriginFilter ~ " WHERE origin IN ?origins;",
-    TRUE ~ ";"
-  )
 }
 
 writeQueryForOrigins <- function() {
@@ -58,21 +79,20 @@ writeQueryForOrigins <- function() {
   );"
 }
 
-writeQueryForDestinations <- function(anOrigin) {
+writeQueryForSeats <- function() {
+  "SELECT f.tailnum, origin, time_hour, seats 
+  FROM flights f
+  INNER JOIN planes p ON f.tailnum = p.tailnum;"
+}
+
+writeWhereClause <- function(needsFlightFilter,
+                             needsOriginFilter) {
   
-  query <- "SELECT faa, name, lat, lon
-  FROM airports 
-  WHERE faa IN 
-  (
-    SELECT DISTINCT dest 
-    FROM
-    (
-      SELECT * 
-        FROM flights 
-      WHERE origin = ?origin
-    ));"
-  
-  
-  sqlInterpolate(ANSI(), query, origin = anOrigin)
+  case_when(
+    needsFlightFilter & needsOriginFilter ~ " WHERE flight = ?flight AND origin IN ?origins;",
+    needsFlightFilter & !needsOriginFilter ~ " WHERE flight = ?flight;",
+    !needsFlightFilter & needsOriginFilter ~ " WHERE origin IN ?origins;",
+    TRUE ~ ";"
+  )
 }
 
