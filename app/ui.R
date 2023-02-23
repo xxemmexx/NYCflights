@@ -47,24 +47,27 @@ body <- dashboardBody(
                             HTML(printGreeting)))),
     tabItem(tabName = "flights_tab",
             box(width = 3,
-                selectInput("origin", 
-                            "Van", 
-                            choices = c('')
-                            
-                )),
-            box(width = 3,
                 numericInput("flight_number",
                              "Vluchtnummer",
                              min = 1,
-                             value = NULL
-                             )),
-            
+                             value = NULL)
+                ),
             box(width = 3,
-                numericInput("overig",
-                             "Overig",
-                             min = 1,
-                             value = NULL
-                )),
+                HTML('<b>Vanaf</b>'),
+                checkboxInput("origin_jfk", 
+                              'JFK'),
+                checkboxInput("origin_lga", 
+                              'La Guardia'),
+                checkboxInput("origin_ewr", 
+                              'Newark')
+                ),
+            box(width = 3,
+                dateRangeInput("date_of_interest",
+                               label = "Daten",
+                               start = "2013-01-01",
+                               end = "2013-12-31",
+                               separator = "t/m",
+                               language = "nl")),
             box(width = 9,
                 DTOutput("flights_table") %>% withSpinner()))
     ) # Close tabItems
