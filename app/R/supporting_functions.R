@@ -1,5 +1,5 @@
 jsHeader <- JS("function(settings, json) {",
-               "$(this.api().table().header()).css({'background-color': '#3E3F3A', 'color': '#FFF0F5'});",
+               "$(this.api().table().header()).css({'background-color': '#2F4F4F', 'color': '#FFF0F5'});",
                "}")
 
 writeQueryForFlightsWithFilters <- function(aFlight = NULL,
@@ -49,16 +49,29 @@ writeWhereClause <- function(needsFlightFilter,
 }
 
 writeQueryForOrigins <- function() {
-  "SELECT DISTINCT origin FROM flights;"
+  "SELECT faa, name, lat, lon
+  FROM airports 
+  WHERE faa IN 
+  (
+  SELECT DISTINCT origin 
+  FROM flights
+  );"
 }
 
 writeQueryForDestinations <- function(anOrigin) {
-  query <- paste0(
-  "SELECT DISTINCT dest FROM (
-  SELECT *
-  FROM flights 
-  WHERE origin = ?origin
-  );")
+  
+  query <- "SELECT faa, name, lat, lon
+  FROM airports 
+  WHERE faa IN 
+  (
+    SELECT DISTINCT dest 
+    FROM
+    (
+      SELECT * 
+        FROM flights 
+      WHERE origin = ?origin
+    ));"
+  
   
   sqlInterpolate(ANSI(), query, origin = anOrigin)
 }

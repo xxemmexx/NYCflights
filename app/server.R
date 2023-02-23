@@ -11,8 +11,7 @@ server <- function(input, output, session) {
   observe({
     updateSelectInput(session, 
                       "origin",
-                      choices = c("", origins()),
-                      selected = "")
+                      choices = c(origins()$faa))
   })
   
   destinations <- reactive({
@@ -20,18 +19,40 @@ server <- function(input, output, session) {
       dbGetQuery(writeQueryForDestinations(anOrigin = input$origin))
   })
   
+  selectedOrigin <- reactive({
+    origins() %>%
+      filter(faa == input$origin)
+  })
+  
+  output$destinations_map <- renderLeaflet({
+    
+    leaflet() %>%
+      addTiles() %>%
+      addCircleMarkers(lng = selectedOrigin()$lon, 
+                       lat = selectedOrigin()$lat,
+                       radius = 5,
+                       selectedOrigin()$name,
+                       color = '#B22222',
+                       popup = selectedOrigin()$name) %>%
+      addCircleMarkers(lng = destinations()$lon, 
+                       lat = destinations()$lat,
+                       radius = 5,
+                       destinations()$name,
+                       color = '#2F4F4F',
+                       popup = destinations()$name)
+    
+  })
+  
   #-----------------------------------------------------------------------------
   # Vluchtinformatie
   #-----------------------------------------------------------------------------
+  
   originsFilter <- reactive({
-    origins <- c('JFK', 'EWR', 'LGA')
+    origins <- origins()$faa
     mask <- c(input$origin_jfk, input$origin_ewr, input$origin_lga)
     
     origins[mask]
   })
-  
-  
-
   
   flights <- reactive({
     preFiltersQuery <- writeQueryForFlightsWithFilters(aFlight = input$flight_number,

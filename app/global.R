@@ -6,6 +6,7 @@ require(dplyr)
 require(DT)
 require(DBI)
 require(RSQLite)
+require(leaflet)
 
 # Define paths and formats
 sdISO <- stamp_date("2018-09-26", quiet = TRUE)
@@ -23,4 +24,4 @@ shiny::onStop(function() {
 options(scipen = 999)
 
 # Set spinner type (for loading)
-options(spinner.type = 4)
+options(spinner.type = 4, spinner.color = '#2F4F4F')

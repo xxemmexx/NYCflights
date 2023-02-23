@@ -29,6 +29,8 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Welkom!",
              tabName = "home_tab"),
+    menuItem("Destinaties",
+             tabName = "map_tab"),
     menuItem("Vluchtinformatie",
              tabName = "flights_tab")
   )
@@ -45,6 +47,22 @@ body <- dashboardBody(
                    title = HTML(printTitle),
                    tabPanel("",
                             HTML(printGreeting)))),
+    tabItem(tabName = "map_tab",
+            fluidRow(
+              box(width = 3,
+                selectInput("origin",
+                             "Vanaf",
+                             choices = c("JFK"))
+                )
+              ), # Close fluid row
+            tags$br(),
+            tags$br(),
+            tags$br(),
+            fluidRow(
+              box(width = 12, 
+                leafletOutput("destinations_map") %>% withSpinner())
+              ) # Close fluid row
+    ),
     tabItem(tabName = "flights_tab",
             box(width = 3,
                 numericInput("flight_number",
