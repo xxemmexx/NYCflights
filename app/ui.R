@@ -24,7 +24,7 @@ header <- dashboardHeader(title = tags$li(a(href = 'http://shinyapps.company.com
                                        )),
                           dropdownMenu(type = "notifications",
                                        headerText = "U hebt nieuwe notificaties",
-                                       notificationItem(text = "Voorzicht! Deze applicatie is kapot. Klik hier voor een betere versie!",
+                                       notificationItem(text = "App geeft error! Get me out of here!",
                                                         href = "emme.shinyapps.io/rebozos"))
   
 )

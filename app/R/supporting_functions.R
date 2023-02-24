@@ -5,7 +5,10 @@ computeOccupancy <- function(aDate, numberOfSeats) {
     aDate == ymd('2013-02-02') | aDate == ymd('2013-02-04') ~ numberOfSeats,
     aDate == ymd('2013-02-03') ~ floor(.45*numberOfSeats),
     aDate < ymd('2013-06-29') ~ floor(.75*numberOfSeats),
-    aDate > ymd('2013-09-01') ~ floor(.75*numberOfSeats),
+    aDate > ymd('2013-09-01') & aDate < ymd('2013-12-15') ~ floor(.75*numberOfSeats),
+    aDate > ymd('2013-12-14') & aDate < ymd('2013-12-25') ~ floor(.92*numberOfSeats),
+    aDate == ymd('2013-12-25') ~ floor(.55*numberOfSeats),
+    aDate > ymd('2013-12-25') & aDate < ymd('2014-01-01') ~ floor(.87*numberOfSeats),
     TRUE ~ numberOfSeats
   )
 }
