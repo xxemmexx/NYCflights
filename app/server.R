@@ -3,6 +3,16 @@ server <- function(input, output, session) {
   # Vliegvelddrukte
   #-----------------------------------------------------------------------------
   
+  
+  observeEvent(input$date_zoom, {
+    if (input$date_zoom[1] > input$date_zoom[2]) {
+      showFeedbackDanger("date_zoom",
+                         text = "Voorzicht! De volgorde van de daten klopt niet")
+    } else {
+      hideFeedback("date_zoom")
+    }
+  })
+  
   seats <- reactive({
     conn %>%
       dbGetQuery(writeQueryForSeats(selectedOrigin()$faa, 
@@ -146,6 +156,15 @@ server <- function(input, output, session) {
     mask <- c(input$origin_jfk, input$origin_ewr, input$origin_lga)
     
     origins[mask]
+  })
+  
+  observeEvent(input$date_of_interest, {
+    if (input$date_of_interest[1] > input$date_of_interest[2]) {
+      showFeedbackDanger("date_of_interest",
+                         text = "Voorzicht! De volgorde van de daten klopt niet")
+    } else {
+      hideFeedback("date_of_interest")
+    }
   })
   
   flights <- reactive({

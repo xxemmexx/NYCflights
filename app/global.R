@@ -1,6 +1,7 @@
 require(shiny)
 require(shinydashboard)
 require(shinycssloaders)
+require(shinyFeedback)
 require(lubridate)
 require(dplyr)
 require(DT)

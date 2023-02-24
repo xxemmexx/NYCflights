@@ -43,8 +43,8 @@ sidebar <- dashboardSidebar(
              tabName = "map_tab"),
     menuItem("Vluchtinformatie",
              tabName = "flights_tab"),
-    HTML("<h4><b>>>>>Inputs</b></h4>"),
     conditionalPanel('input.sidebar_menu == "drukte_tab" || input.sidebar_menu == "map_tab"',
+                     HTML("<h4><b>>>>>Inputs</b></h4>"),
                      selectInput("origin",
                                  "Vliegend vanaf",
                                  choices = c(""))
@@ -60,6 +60,7 @@ body <- dashboardBody(
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "stylesheet.css")
   ),
+  useShinyFeedback(),
   tabItems(
     tabItem(tabName = "home_tab",
             box(id = "welkom_note_box",
