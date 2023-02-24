@@ -51,12 +51,13 @@ body <- dashboardBody(
   tabItems(
     tabItem(tabName = "home_tab",
             box(id = "welkom_note_box",
-                   width = 12,
-                   title = HTML(printTitle),
-                   tabPanel("",
-                            HTML(printGreeting)))),
+                width = 12,
+                background = 'black',
+                title = HTML(printTitle),
+                tabPanel("",
+                         HTML(printGreeting)))),
     tabItem(tabName = "drukte_tab",
-            box(width = 3,
+            box(width = 4,
                 dateRangeInput("date_zoom",
                                label = "Daten",
                                start = "2013-01-01",
@@ -64,7 +65,9 @@ body <- dashboardBody(
                                separator = "t/m",
                                language = "nl")),
             box(width = 12,
-                plotOutput("occupancy_plot") %>% withSpinner())
+                plotOutput("occupancy_plot") %>% withSpinner()),
+            box(width = 12,
+                plotOutput("capacity_plot", height = '14em') %>% withSpinner())
             # box(width = 9,
             #     DTOutput("occupancy_table") %>% withSpinner())
             ),

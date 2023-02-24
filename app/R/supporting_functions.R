@@ -10,8 +10,14 @@ computeOccupancy <- function(aDate, numberOfSeats) {
   )
 }
 
-getTitleForOccupancyPlot <- function(anOrigin, fromDate, toDate) {
-  paste0("Aantal passagiers per dag vanaf ", anOrigin, "\n",
+getTitleForPlot <- function(type = c("occupancy", "capacity"), anOrigin, fromDate, toDate) {
+  type <- match.arg(type)
+  
+  head <- switch(type,
+         "occupancy" = "Aantal passagiers per dag vanaf ",
+         "capacity" = "% van totale capaciteit in ")
+  
+  paste0(head, anOrigin, "\n",
          "(Periode: ", fromDate, " t/m ", toDate, ")")
 }
 

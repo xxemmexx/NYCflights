@@ -18,44 +18,73 @@ server <- function(input, output, session) {
                 date = ymd_hms(time_hour) %>% as.Date(),
                 dayOfYear = yday(date),
                 occupancy = computeOccupancy(date, as.numeric(seats)),
-                randomPassengers = floor(runif(n = lengthSeats, min = -10, max = 10)),
+                randomPassengers = floor(runif(n = lengthSeats, min = -6, max = 6)),
                 variance = if_else(seats < 56, 0, randomPassengers),
-                nettoOccupancy = occupancy + variance) %>%
+                nettoOccupancy = occupancy + variance,
+                percentageCapacity = round(nettoOccupancy/seats*100)) %>%
       group_by(dayOfYear) %>%
-      summarise(`netto` = sum(nettoOccupancy)/100, 
-                date = date) %>%
+      summarise(date = date,
+                netto = sum(nettoOccupancy)/100, 
+                capacity = mean(percentageCapacity)) %>%
       ungroup()
     
   })
   
-  # output$occupancy_table <- renderDT({
-  #   
-  #   lengthSeats <- nrow(seats())
-  #   
-  #   seats() %>%
-  #     transmute(origin,
-  #               date = ymd_hms(time_hour) %>% as.Date(),
-  #               dayOfYear = yday(date),
-  #               occupancy = computeOccupancy(date, as.numeric(seats)),
-  #               randomPassengers = floor(runif(n = lengthSeats, min = -6, max = 6)),
-  #               variance = if_else(seats < 56, 0, randomPassengers),
-  #               nettoOccupancy = occupancy + variance) %>%
-  #     datatable(rownames = FALSE,
-  #               colnames = c('Van', 'Datum', 'Day Index', 'Seats', 'Ran', 'netto'),
-  #               selection = "none",
-  #               class = "compact",
-  #               options = list(scrollX = TRUE,
-  #                              dom = 'tp'
-  #               )
-  #     )
-  # })
+  output$occupancy_table <- renderDT({
+
+    lengthSeats <- nrow(seats())
+
+    seats() %>%
+      transmute(origin,
+                date = ymd_hms(time_hour) %>% as.Date(),
+                dayOfYear = yday(date),
+                occupancy = computeOccupancy(date, as.numeric(seats)),
+                randomPassengers = floor(runif(n = lengthSeats, min = -50, max = 50)),
+                variance = if_else(seats < 56, 0, randomPassengers),
+                nettoOccupancy = occupancy + variance,
+                percentageCapacity = round(nettoOccupancy/seats*100)) %>%
+      group_by(dayOfYear) %>%
+      summarise(date = date,
+                netto = sum(nettoOccupancy)/100, 
+                capacity = mean(percentageCapacity)) %>%
+      ungroup() %>%
+      distinct() %>%
+      datatable(rownames = FALSE,
+                #colnames = c('Van', 'Datum', 'Day Index', 'Seats', 'Ran', 'netto', '%'),
+                selection = "none",
+                class = "compact",
+                options = list(scrollX = TRUE,
+                               dom = 'tp'
+                )
+      )
+  })
   
   output$occupancy_plot <- renderPlot({
     actualOccupancy() %>%
-      ggplot(aes(x = date, y = `netto`)) +
+      ggplot(aes(x = date, y = netto)) +
       geom_point() + geom_line() +
-      ggtitle(getTitleForOccupancyPlot(selectedOrigin()$name, input$date_zoom[1], input$date_zoom[2])) +
+      ggtitle(getTitleForPlot("occupancy",
+                              selectedOrigin()$name, 
+                              input$date_zoom[1], 
+                              input$date_zoom[2])) +
       xlab("") + ylab("Aantal passagieren (x100)") +
+      theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5)) +
+      theme(axis.title.x = element_text(size = 12, face = "bold")) +
+      theme(axis.title.y = element_text(size = 12, face = "bold")) +
+      theme(axis.text.x= element_text(face = "bold", size = 12)) +
+      theme(axis.text.y= element_text(face = "bold", size = 12))
+  })
+  
+  output$capacity_plot <- renderPlot({
+    actualOccupancy() %>%
+      distinct() %>%
+      ggplot(aes(x = date, y = capacity)) +
+      geom_bar(stat='identity') +
+      ggtitle(getTitleForPlot("capacity",
+                              selectedOrigin()$name, 
+                              input$date_zoom[1], 
+                              input$date_zoom[2])) +
+      xlab("") + ylab("% totale capaciteit") +
       theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5)) +
       theme(axis.title.x = element_text(size = 12, face = "bold")) +
       theme(axis.title.y = element_text(size = 12, face = "bold")) +
