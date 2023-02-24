@@ -53,6 +53,18 @@ jsHeader <- JS("function(settings, json) {",
                "$(this.api().table().header()).css({'background-color': '#2F4F4F', 'color': '#FFF0F5'});",
                "}")
 
+writeQueryForAirpots <- function(faaCodes) {
+  
+  # Write each origin in a quoted list for SQL to understand it
+  faaCodes <- sprintf("(%s)", toString(sprintf("'%s'", faaCodes)))
+  
+  query <- "SELECT faa, name 
+  FROM airports 
+  WHERE faa IN ?faaCodes;"
+  
+  sqlInterpolate(ANSI(), query, faaCodes = SQL(faaCodes))
+}
+
 writeQueryForDestinations <- function(anOrigin) {
   
   query <- "SELECT faa, name, lat, lon
@@ -75,7 +87,7 @@ writeQueryForFlightsWithFilters <- function(aFlight, origins) {
   
   # Write base select statement with no clauses
   baseQuery <- "SELECT flight_id, time_hour, dep_time, sched_dep_time, dep_delay, arr_time,
-  sched_arr_time, arr_delay, carrier, flight, origin, dest, distance FROM flights"
+  sched_arr_time, arr_delay, carrier, tailnum, flight, origin, dest, distance FROM flights"
 
   # Check whether flight filter is being applied
   needsFlightFilter <- !is.na(aFlight)

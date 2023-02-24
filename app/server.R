@@ -168,27 +168,46 @@ server <- function(input, output, session) {
   })
   
   flights <- reactive({
-    preFiltersQuery <- writeQueryForFlightsWithFilters(aFlight = input$flight_number,
+    preFilteredQuery <- writeQueryForFlightsWithFilters(aFlight = input$flight_number,
                                                         origins = originsFilter())
     
-      dbGetQuery(conn, preFiltersQuery) %>%
+      dbGetQuery(conn, preFilteredQuery) %>%
         filter(between(as.Date(ymd_hms(time_hour)), 
                    ymd(input$date_of_interest[1]), 
                    ymd(input$date_of_interest[2])))
+  })
+  
+  airports <- reactive({
+    
+    faaCodes <- flights()$dest %>%
+      unique() 
+    
+    airportLookUpTable <- dbGetQuery(conn, writeQueryForAirpots(faaCodes))
+    
+    airports <- airportLookUpTable$name
+    
+    names(airports) <- airportLookUpTable$faa
+    
+    airports
   })
   
   
   output$flights_table <- renderDT({
     
     flights() %>%
-      transmute(flight, origin, dest, sdISO(ymd_hms(time_hour))) %>%
+      transmute(sdISO(ymd_hms(time_hour)), 
+                flight, 
+                tailnum, 
+                origin, 
+                destination = unname(airports()[dest])) %>%
       datatable(rownames = FALSE,
-                colnames = c('Vlucht', 'Van', 'Naar', 'Datum'),
+                colnames = c('Datum', 'Vluchtnr.', 'Code', 'Van', 'Naar'),
                 selection = "single",
                 class = "compact stripe row-border nowrap",
                 #escape = -1,  # Escape the HTML in all except 1st column (which has the buttons)
                 options = list(scrollX = TRUE,
                                dom = 'ftp',
+                               columnDefs = list(list(targets = 0, orderable = FALSE)),
                                pageLength = 10,
                                initComplete = jsHeader,
                                language = list(emptyTable = "Geen vlucht gevonden",
