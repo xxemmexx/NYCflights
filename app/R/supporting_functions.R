@@ -6,6 +6,30 @@ computeOccupancy <- function(aDate, numberOfSeats) {
   )
 }
 
+interpolateFlightsQuery <- function(aQuery,
+                                    needsFlightFilter,
+                                    aFlight,
+                                    needsOriginFilter,
+                                    origins) {
+  
+  # Decide how to insert the query parameters
+  if(needsFlightFilter & needsOriginFilter) {
+    
+    sqlInterpolate(ANSI(), aQuery, .dots = list(flight = aFlight, origins = SQL(origins)))
+    
+  } else if (needsFlightFilter & !needsOriginFilter) {
+    
+    sqlInterpolate(ANSI(), aQuery, flight = aFlight)
+    
+  } else if (!needsFlightFilter & needsOriginFilter) {
+    
+    sqlInterpolate(ANSI(), aQuery, origins = SQL(origins))
+    
+  } else {
+    
+    aQuery
+  }
+}
 
 jsHeader <- JS("function(settings, json) {",
                "$(this.api().table().header()).css({'background-color': '#2F4F4F', 'color': '#FFF0F5'});",
@@ -49,23 +73,8 @@ writeQueryForFlightsWithFilters <- function(aFlight, origins) {
   whereClause <- writeWhereClause(needsFlightFilter, needsOriginFilter)
   query <- paste0(baseQuery, whereClause)
   
-  # Decide how to insert the query parameters
-  if(needsFlightFilter & needsOriginFilter) {
-    
-    sqlInterpolate(ANSI(), query, .dots = list(flight = aFlight, origins = SQL(origins)))
-    
-  } else if (needsFlightFilter & !needsOriginFilter) {
-    
-    sqlInterpolate(ANSI(), query, flight = aFlight)
-    
-  } else if (!needsFlightFilter & needsOriginFilter) {
-    
-    sqlInterpolate(ANSI(), query, origins = SQL(origins))
-    
-  } else {
-    
-    query
-  }
+  query %>%
+    interpolateFlightsQuery(needsFlightFilter, aFlight, needsOriginFilter, origins)
 
 }
 
@@ -79,10 +88,16 @@ writeQueryForOrigins <- function() {
   );"
 }
 
-writeQueryForSeats <- function() {
-  "SELECT f.tailnum, origin, time_hour, seats 
+writeQueryForSeats <- function(aDate1, aDate2) {
+  query <- "SELECT *
+  FROM (
+  SELECT f.tailnum, origin, time_hour, seats 
   FROM flights f
-  INNER JOIN planes p ON f.tailnum = p.tailnum;"
+  INNER JOIN planes p ON f.tailnum = p.tailnum
+  )
+  WHERE time_hour BETWEEN date(?date1) AND date(?date2);"
+  
+  sqlInterpolate(ANSI(), query, .dots = list(date1 = aDate1, date2 = aDate2))
 }
 
 writeWhereClause <- function(needsFlightFilter,

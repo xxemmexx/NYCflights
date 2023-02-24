@@ -5,7 +5,8 @@ server <- function(input, output, session) {
   
   seats <- reactive({
     conn %>%
-      dbGetQuery(writeQueryForSeats())
+      dbGetQuery(writeQueryForSeats(as.character(input$date_zoom[1]),
+                                    as.character(input$date_zoom[2])))
   })
   
   actualOccupancy <- reactive({
@@ -14,9 +15,6 @@ server <- function(input, output, session) {
                 date = ymd_hms(time_hour) %>% as.Date(),
                 dayOfYear = yday(date),
                 occupancy = computeOccupancy(date, as.numeric(seats))) %>%
-      filter(between(date, 
-                     ymd(input$date_zoom[1]), 
-                     ymd(input$date_zoom[2]))) %>%
       group_by(dayOfYear) %>%
       summarise(nettoccupied = sum(occupancy)) %>%
       ungroup()
