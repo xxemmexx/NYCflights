@@ -133,6 +133,7 @@ server <- function(input, output, session) {
                        destinations()$name,
                        color = '#2F4F4F',
                        popup = destinations()$name)
+      
     
   })
   

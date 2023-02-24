@@ -85,13 +85,8 @@ body <- dashboardBody(
             ),
     tabItem(tabName = "map_tab",
             fluidRow(
-              
-              ), # Close fluid row
-            tags$br(),
-            tags$br(),
-            tags$br(),
-            fluidRow(
-              box(width = 12, 
+              box(width = 12,
+                  title = "Overzicht destinaties",
                 leafletOutput("destinations_map") %>% withSpinner())
               ) # Close fluid row
     ),
@@ -105,7 +100,7 @@ body <- dashboardBody(
                 ),
             box(width = 3,
                 background = 'navy',
-                HTML('<b>Vanaf</b>'),
+                HTML('<b>Vliegend vanaf</b>'),
                 checkboxInput("origin_jfk", 
                               'JFK'),
                 checkboxInput("origin_lga", 
