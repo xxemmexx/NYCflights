@@ -5,20 +5,19 @@ header <- dashboardHeader(
   dropdownMenu(type = "messages",
                headerText = "U hebt nieuwe berichtjes",
                messageItem(
-                 from = "M",
-                 message = "Welcome to the analysis area!",
-                 href = "https://dict.leo.org/french-english/area"
+                 from = "Alonso M. Acuña",
+                 message = "Historical facts for February 3rd",
+                 href = "https://en.wikipedia.org/wiki/Super_Bowl_XLVII"
+               ),
+               messageItem(
+                 from = "Alonso M. Acuña",
+                 message = "Historical facts for February 9th",
+                 href = "https://en.wikipedia.org/wiki/February_2013_North_American_blizzard"
                )),
   dropdownMenu(type = "notifications",
                headerText = "U hebt nieuwe notificaties",
                notificationItem(text = "Welkom notificatie bijgevoegd",
-                                href = "https://dict.leo.org/french-english/area")),
-  dropdownMenu(type = "tasks",
-               headerText = "Hoe ver ben je met je analyse?",
-               taskItem(
-                 text = "Je bent er bijna!",
-                 value = 55
-               ))
+                                href = "https://dict.leo.org/french-english/area"))
 )
 
 #-------------------------------------------------------------------------------
@@ -26,7 +25,7 @@ header <- dashboardHeader(
 #-------------------------------------------------------------------------------
 sidebar <- dashboardSidebar(
   HTML("<h4><b>>>>>Navigatie</b></h4>"),
-  sidebarMenu(
+  sidebarMenu(id = "sidebar_menu",
     menuItem("Welkom!",
              tabName = "home_tab"),
     menuItem("Vliegvelddrukte",
@@ -34,7 +33,14 @@ sidebar <- dashboardSidebar(
     menuItem("Destinaties",
              tabName = "map_tab"),
     menuItem("Vluchtinformatie",
-             tabName = "flights_tab")
+             tabName = "flights_tab"),
+    HTML("<h4><b>>>>>Inputs</b></h4>"),
+    conditionalPanel('input.sidebar_menu == "drukte_tab" || input.sidebar_menu == "map_tab"',
+                     selectInput("origin",
+                                 "Vanaf",
+                                 choices = c(""))
+    
+    )
   )
 )
 
@@ -64,11 +70,7 @@ body <- dashboardBody(
             ),
     tabItem(tabName = "map_tab",
             fluidRow(
-              box(width = 3,
-                selectInput("origin",
-                             "Vanaf",
-                             choices = c("JFK"))
-                )
+              
               ), # Close fluid row
             tags$br(),
             tags$br(),

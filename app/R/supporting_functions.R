@@ -1,9 +1,18 @@
 computeOccupancy <- function(aDate, numberOfSeats) {
   case_when(
+    aDate == ymd('2013-01-31') | aDate == ymd('2013-02-06') ~ floor(.88*numberOfSeats),
+    aDate == ymd('2013-02-01') | aDate == ymd('2013-02-05') ~ floor(.95*numberOfSeats),
+    aDate == ymd('2013-02-02') | aDate == ymd('2013-02-04') ~ numberOfSeats,
+    aDate == ymd('2013-02-03') ~ floor(.45*numberOfSeats),
     aDate < ymd('2013-06-29') ~ floor(.75*numberOfSeats),
     aDate > ymd('2013-09-01') ~ floor(.75*numberOfSeats),
     TRUE ~ numberOfSeats
   )
+}
+
+getTitleForOccupancyPlot <- function(anOrigin, fromDate, toDate) {
+  paste0("Aantal passagiers per dag vanaf ", anOrigin, "\n",
+         "(Periode: ", fromDate, " t/m ", toDate, ")")
 }
 
 interpolateFlightsQuery <- function(aQuery,
@@ -88,16 +97,16 @@ writeQueryForOrigins <- function() {
   );"
 }
 
-writeQueryForSeats <- function(aDate1, aDate2) {
+writeQueryForSeats <- function(anOrigin, aDate1, aDate2) {
   query <- "SELECT *
   FROM (
   SELECT f.tailnum, origin, time_hour, seats 
   FROM flights f
   INNER JOIN planes p ON f.tailnum = p.tailnum
   )
-  WHERE time_hour BETWEEN date(?date1) AND date(?date2);"
+  WHERE origin = ?origin AND time_hour BETWEEN date(?date1) AND date(?date2);"
   
-  sqlInterpolate(ANSI(), query, .dots = list(date1 = aDate1, date2 = aDate2))
+  sqlInterpolate(ANSI(), query, .dots = list(origin = anOrigin, date1 = aDate1, date2 = aDate2))
 }
 
 writeWhereClause <- function(needsFlightFilter,

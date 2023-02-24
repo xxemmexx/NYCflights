@@ -5,26 +5,43 @@ server <- function(input, output, session) {
   
   seats <- reactive({
     conn %>%
-      dbGetQuery(writeQueryForSeats(as.character(input$date_zoom[1]),
+      dbGetQuery(writeQueryForSeats(selectedOrigin()$faa, 
+                                    as.character(input$date_zoom[1]),
                                     as.character(input$date_zoom[2])))
   })
   
   actualOccupancy <- reactive({
+    lengthSeats <- nrow(seats())
+    
     seats() %>%
       transmute(origin,
                 date = ymd_hms(time_hour) %>% as.Date(),
                 dayOfYear = yday(date),
-                occupancy = computeOccupancy(date, as.numeric(seats))) %>%
+                occupancy = computeOccupancy(date, as.numeric(seats)),
+                randomPassengers = floor(runif(n = lengthSeats, min = -10, max = 10)),
+                variance = if_else(seats < 56, 0, randomPassengers),
+                nettoOccupancy = occupancy + variance) %>%
       group_by(dayOfYear) %>%
-      summarise(nettoccupied = sum(occupancy)) %>%
+      summarise(`netto` = sum(nettoOccupancy)/100, 
+                date = date) %>%
       ungroup()
     
   })
   
   # output$occupancy_table <- renderDT({
-  #   actualOccupancy() %>%
+  #   
+  #   lengthSeats <- nrow(seats())
+  #   
+  #   seats() %>%
+  #     transmute(origin,
+  #               date = ymd_hms(time_hour) %>% as.Date(),
+  #               dayOfYear = yday(date),
+  #               occupancy = computeOccupancy(date, as.numeric(seats)),
+  #               randomPassengers = floor(runif(n = lengthSeats, min = -6, max = 6)),
+  #               variance = if_else(seats < 56, 0, randomPassengers),
+  #               nettoOccupancy = occupancy + variance) %>%
   #     datatable(rownames = FALSE,
-  #               colnames = c('Van', 'Datum', 'Day Index', 'Seats'),
+  #               colnames = c('Van', 'Datum', 'Day Index', 'Seats', 'Ran', 'netto'),
   #               selection = "none",
   #               class = "compact",
   #               options = list(scrollX = TRUE,
@@ -35,19 +52,18 @@ server <- function(input, output, session) {
   
   output$occupancy_plot <- renderPlot({
     actualOccupancy() %>%
-      ggplot(aes(x = dayOfYear, y = nettoccupied)) +
-      geom_point()
+      ggplot(aes(x = date, y = `netto`)) +
+      geom_point() + geom_line() +
+      ggtitle(getTitleForOccupancyPlot(selectedOrigin()$name, input$date_zoom[1], input$date_zoom[2])) +
+      xlab("") + ylab("Aantal passagieren (x100)") +
+      theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5)) +
+      theme(axis.title.x = element_text(size = 12, face = "bold")) +
+      theme(axis.title.y = element_text(size = 12, face = "bold")) +
+      theme(axis.text.x= element_text(face = "bold", size = 12)) +
+      theme(axis.text.y= element_text(face = "bold", size = 12))
   })
   
-  tr <- tribble(~a, ~b,
-          1, 3,
-          1, 6,
-          2, 5,
-          2, 19)
   
-  tr %>%
-    group_by(a) %>%
-    summarise(n = sum(b))
   #-----------------------------------------------------------------------------
   # Destinaties
   #-----------------------------------------------------------------------------
