@@ -18,8 +18,8 @@ server <- function(input, output, session) {
                 date = ymd_hms(time_hour) %>% as.Date(),
                 dayOfYear = yday(date),
                 occupancy = computeOccupancy(date, as.numeric(seats)),
-                randomPassengers = floor(runif(n = lengthSeats, min = -6, max = 6)),
-                variance = if_else(seats < 56, 0, randomPassengers),
+                randomPassengers = floor(runif(n = lengthSeats, min = -85, max = 85)),
+                variance = if_else(seats < 100, 0, randomPassengers),
                 nettoOccupancy = occupancy + variance,
                 percentageCapacity = round(nettoOccupancy/seats*100)) %>%
       group_by(dayOfYear) %>%

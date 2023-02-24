@@ -1,23 +1,32 @@
 #-------------------------------------------------------------------------------
 # Header
 #-------------------------------------------------------------------------------
-header <- dashboardHeader(
-  dropdownMenu(type = "messages",
-               headerText = "U hebt nieuwe berichtjes",
-               messageItem(
-                 from = "Alonso M. Acuña",
-                 message = "Historical facts for February 3rd",
-                 href = "https://en.wikipedia.org/wiki/Super_Bowl_XLVII"
-               ),
-               messageItem(
-                 from = "Alonso M. Acuña",
-                 message = "Historical facts for February 9th",
-                 href = "https://en.wikipedia.org/wiki/February_2013_North_American_blizzard"
-               )),
-  dropdownMenu(type = "notifications",
-               headerText = "U hebt nieuwe notificaties",
-               notificationItem(text = "Welkom notificatie bijgevoegd",
-                                href = "https://dict.leo.org/french-english/area"))
+header <- dashboardHeader(title = tags$li(a(href = 'http://shinyapps.company.com',
+                                            icon("plane"),
+                                            title = "NYCFlights"),
+                                          class = "dropdown"),
+                          tags$li(a(href = 'http://www.nza.nl',
+                                    img(src = 'nza-logo.png',
+                                        title = "Ga naar NZa", height = "30px"),
+                                    style = "padding-top:10px; padding-bottom:10px;"),
+                                  class = "dropdown"),
+                          dropdownMenu(type = "messages",
+                                       headerText = "U hebt nieuwe berichtjes",
+                                       messageItem(
+                                         from = "Wiki fact",
+                                         message = "February 3rd, 2023",
+                                         href = "https://en.wikipedia.org/wiki/Super_Bowl_XLVII"
+                                       ),
+                                       messageItem(
+                                         from = "Wiki fact",
+                                         message = "February 9th, 2023",
+                                         href = "https://en.wikipedia.org/wiki/February_2013_North_American_blizzard"
+                                       )),
+                          dropdownMenu(type = "notifications",
+                                       headerText = "U hebt nieuwe notificaties",
+                                       notificationItem(text = "Voorzicht! Deze applicatie is kapot. Klik hier voor een betere versie!",
+                                                        href = "emme.shinyapps.io/rebozos"))
+  
 )
 
 #-------------------------------------------------------------------------------
@@ -37,7 +46,7 @@ sidebar <- dashboardSidebar(
     HTML("<h4><b>>>>>Inputs</b></h4>"),
     conditionalPanel('input.sidebar_menu == "drukte_tab" || input.sidebar_menu == "map_tab"',
                      selectInput("origin",
-                                 "Vanaf",
+                                 "Vliegend vanaf",
                                  choices = c(""))
     
     )
@@ -48,16 +57,19 @@ sidebar <- dashboardSidebar(
 # Dashboard Body
 #-------------------------------------------------------------------------------
 body <- dashboardBody(
+  tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "stylesheet.css")
+  ),
   tabItems(
     tabItem(tabName = "home_tab",
             box(id = "welkom_note_box",
                 width = 12,
-                background = 'black',
                 title = HTML(printTitle),
                 tabPanel("",
                          HTML(printGreeting)))),
     tabItem(tabName = "drukte_tab",
             box(width = 4,
+                background = 'navy',
                 dateRangeInput("date_zoom",
                                label = "Daten",
                                start = "2013-01-01",
@@ -85,12 +97,14 @@ body <- dashboardBody(
     ),
     tabItem(tabName = "flights_tab",
             box(width = 3,
+                background = 'navy',
                 numericInput("flight_number",
                              "Vluchtnummer",
                              min = 1,
                              value = NULL)
                 ),
             box(width = 3,
+                background = 'navy',
                 HTML('<b>Vanaf</b>'),
                 checkboxInput("origin_jfk", 
                               'JFK'),
@@ -100,6 +114,7 @@ body <- dashboardBody(
                               'Newark')
                 ),
             box(width = 3,
+                background = 'navy',
                 dateRangeInput("date_of_interest",
                                label = "Daten",
                                start = "2013-01-01",
@@ -111,4 +126,7 @@ body <- dashboardBody(
     ) # Close tabItems
   ) # Close dasboardBody
 
-ui <- dashboardPage(header, sidebar, body)
+ui <- dashboardPage(header = header, 
+                    sidebar = sidebar, 
+                    body = body, 
+                    skin = "black")
