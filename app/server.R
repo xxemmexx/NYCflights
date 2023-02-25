@@ -174,7 +174,7 @@ server <- function(input, output, session) {
     airports
   })
   
-  flights_table_prep <- reactiveVal(NULL)
+  flights_table_display <- reactiveVal(NULL)
   
   observeEvent(flights(), {
     
@@ -195,19 +195,19 @@ server <- function(input, output, session) {
     
     flightsTable <- cbind(tibble(" " = actions), flightsTable)
     
-    flights_table_prep(flightsTable)
+    flights_table_display(flightsTable)
     
   })
   
   output$flights_table <- renderDT({
-    req(flights_table_prep())
+    req(flights_table_display())
     
-    flights_table_prep() %>%
+    flights_table_display() %>%
       datatable(rownames = FALSE,
                 colnames = c('Datum', 'Vluchtnr.', 'Code', 'Van', 'Naar'),
                 selection = "single",
                 class = "compact stripe row-border nowrap",
-                escape = -1,  # Escape the HTML in all except 1st column (which has the buttons)
+                escape = -1,  
                 options = list(scrollX = TRUE,
                                dom = 'ftp',
                                columnDefs = list(list(targets = 0, orderable = FALSE)),
@@ -235,6 +235,4 @@ server <- function(input, output, session) {
                            flight = flight,
                            modal_trigger = reactive({input$flight_id})
                            )
-  
-  
 }
