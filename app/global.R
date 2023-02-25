@@ -13,19 +13,10 @@ require(ggplot2)
 # Define paths and formats
 sdISO <- stamp_date("2018-09-26", quiet = TRUE)
 localDBPath <- "data/nyc.sqlite3"
-
-# Import feature importance data
-importanceModelI <- read.csv('data/importance_model_I.csv', 
-                             header = TRUE, 
-                             sep = ";", 
-                             dec = ",",
-                             stringsAsFactors = FALSE) %>%
-  as_tibble() %>%
-  transmute(parameter = X %>% as.factor(),
-            importance = IncNodePurity)
-  
-
-
+pathToDataModelI <- "data/importance_model_I.csv"
+pathToLGADataModelII <- "data/importance_model_II_lga.csv"
+pathToJFKDataModelII <- "data/importance_model_II_jfk.csv"
+pathToEWRDataModelII <- "data/importance_model_II_ewr.csv"
 
 # Connect to database when app is launched
 conn <- dbConnect(RSQLite::SQLite(), dbname = localDBPath)

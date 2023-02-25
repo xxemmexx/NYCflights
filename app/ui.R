@@ -45,7 +45,8 @@ sidebar <- dashboardSidebar(
              tabName = "map_tab"),
     menuItem("Vluchtinformatie",
              tabName = "flights_tab"),
-    conditionalPanel('input.sidebar_menu == "drukte_tab" || input.sidebar_menu == "map_tab"',
+    conditionalPanel('input.sidebar_menu == "drukte_tab" || input.sidebar_menu == "map_tab" ||
+                     input.sidebar_menu == "vertraging_tab"',
                      HTML("<h4><b>>>>>Inputs</b></h4>"),
                      selectInput("origin",
                                  "Vliegend vanaf",
@@ -88,10 +89,17 @@ body <- dashboardBody(
             ),
     tabItem(tabName = "vertraging_tab",
             fluidRow(
-              box(width = 6,
-                  plotOutput("importance_I", height = '35em')
-              )
-            )),
+              tabBox(
+                side = "right", height = "450px",
+                selected = "Analyse Team A",
+                tabPanel("Analyse Team A", 
+                         plotOutput("importance_I", height = '35em') %>% withSpinner()),
+                tabPanel("Analyse Team B", 
+                         plotOutput("importance_II", height = '35em') %>% withSpinner())
+                ), # Close tabbox
+              box(HTML(printVertragingText))
+              ) # Close fluid row
+            ),
     tabItem(tabName = "map_tab",
             fluidRow(
               box(width = 12,

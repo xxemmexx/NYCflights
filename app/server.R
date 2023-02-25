@@ -38,34 +38,34 @@ server <- function(input, output, session) {
     
   })
   
-  output$occupancy_table <- renderDT({
-
-    lengthSeats <- nrow(seats())
-
-    seats() %>%
-      transmute(origin,
-                date = ymd_hms(time_hour) %>% as.Date(),
-                dayOfYear = yday(date),
-                occupancy = computeOccupancy(date, as.numeric(seats)),
-                randomPassengers = floor(runif(n = lengthSeats, min = -50, max = 50)),
-                variance = if_else(seats < 56, 0, randomPassengers),
-                nettoOccupancy = occupancy + variance,
-                percentageCapacity = round(nettoOccupancy/seats*100)) %>%
-      group_by(dayOfYear) %>%
-      summarise(date = date,
-                netto = sum(nettoOccupancy)/100, 
-                capacity = mean(percentageCapacity)) %>%
-      ungroup() %>%
-      distinct() %>%
-      datatable(rownames = FALSE,
-                #colnames = c('Van', 'Datum', 'Day Index', 'Seats', 'Ran', 'netto', '%'),
-                selection = "none",
-                class = "compact",
-                options = list(scrollX = TRUE,
-                               dom = 'tp'
-                )
-      )
-  })
+  # output$occupancy_table <- renderDT({
+  # 
+  #   lengthSeats <- nrow(seats())
+  # 
+  #   seats() %>%
+  #     transmute(origin,
+  #               date = ymd_hms(time_hour) %>% as.Date(),
+  #               dayOfYear = yday(date),
+  #               occupancy = computeOccupancy(date, as.numeric(seats)),
+  #               randomPassengers = floor(runif(n = lengthSeats, min = -50, max = 50)),
+  #               variance = if_else(seats < 56, 0, randomPassengers),
+  #               nettoOccupancy = occupancy + variance,
+  #               percentageCapacity = round(nettoOccupancy/seats*100)) %>%
+  #     group_by(dayOfYear) %>%
+  #     summarise(date = date,
+  #               netto = sum(nettoOccupancy)/100, 
+  #               capacity = mean(percentageCapacity)) %>%
+  #     ungroup() %>%
+  #     distinct() %>%
+  #     datatable(rownames = FALSE,
+  #               #colnames = c('Van', 'Datum', 'Day Index', 'Seats', 'Ran', 'netto', '%'),
+  #               selection = "none",
+  #               class = "compact",
+  #               options = list(scrollX = TRUE,
+  #                              dom = 'tp'
+  #               )
+  #     )
+  # })
   
   output$occupancy_plot <- renderPlot({
     actualOccupancy() %>%
@@ -103,26 +103,21 @@ server <- function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Vertraging
   #-----------------------------------------------------------------------------
-  # output$importance_I_table <- renderTable({
-  # importanceModelI %>%
-  #     mutate(X = fct_reorder(X, IncNodePurity))
-  # })
-    
   output$importance_I <- renderPlot({
-    importanceModelI %>%
-      mutate(parameter = reorder(parameter, importance)) %>%
-      ggplot(aes(x = parameter, y = importance)) +
-      geom_bar(stat = "identity", fill = defineColours(importanceModelI$importance)) +
-      ggtitle("Invloed parameters") +
-      xlab("") + ylab("") +
-      theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5)) +
-      theme(axis.title.x = element_text(size = 16, face = "bold")) +
-      theme(axis.title.y = element_text(size = 16, face = "bold")) +
-      theme(axis.text.x= element_blank()) +
-      theme(axis.text.y= element_text(face = "bold", size = 12, angle = 15)) +
-      coord_flip()
-      
+    
+    pathToDataModelI %>%
+      readAndFormatData() %>%
+      generateImportancePlot()
   })
+  
+  output$importance_II <- renderPlot({
+    
+    input$origin %>%
+      getPathForOrigin() %>%
+      readAndFormatData() %>%
+      generateImportancePlot()
+  })
+  
   #-----------------------------------------------------------------------------
   # Destinaties
   #-----------------------------------------------------------------------------

@@ -16,10 +16,33 @@ computeOccupancy <- function(aDate, numberOfSeats) {
 defineColours <- function(aNumber) {
   case_when(
     aNumber > 1000000 ~ "#8B0000",
-    aNumber < 1000000 & aNumber > 700000 ~ "#CD853F",
+    aNumber < 1000000 & aNumber > 550000 ~ "#CD853F",
     TRUE ~ "#6B8E23"
   )
   
+}
+
+generateImportancePlot <- function(aDataset) {
+  aDataset %>%
+    ggplot(aes(x = parameter, y = importance)) +
+    geom_bar(stat = "identity", fill = defineColours(aDataset$importance)) +
+    ggtitle("Wat in hoever vertraging bepaald") +
+    xlab("") + ylab("") +
+    theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5)) +
+    theme(axis.title.x = element_text(size = 16, face = "bold")) +
+    theme(axis.title.y = element_text(size = 16, face = "bold")) +
+    theme(axis.text.x= element_blank()) +
+    theme(axis.text.y= element_text(face = "bold", size = 12, angle = 15)) +
+    coord_flip()
+}
+
+getPathForOrigin <- function(aCode) {
+  case_when(
+    aCode == 'EWR' ~ pathToEWRDataModelII,
+    aCode == 'JFK' ~ pathToJFKDataModelII,
+    aCode == 'LGA' ~ pathToLGADataModelII,
+    TRUE ~ pathToEWRDataModelII
+  )
 }
 
 getTitleForPlot <- function(type = c("occupancy", "capacity"), anOrigin, fromDate, toDate) {
@@ -61,6 +84,18 @@ interpolateFlightsQuery <- function(aQuery,
 jsHeader <- JS("function(settings, json) {",
                "$(this.api().table().header()).css({'background-color': '#2F4F4F', 'color': '#FFF0F5'});",
                "}")
+
+readAndFormatData <- function(aPathToDataset) {
+  read.csv(aPathToDataset, 
+           header = TRUE, 
+           sep = ";", 
+           dec = ",",
+           stringsAsFactors = FALSE) %>%
+    as_tibble() %>%
+    transmute(parameter = X %>% as.factor(),
+              importance = IncNodePurity) %>%
+    mutate(parameter = reorder(parameter, importance))
+}
 
 writeQueryForAirpots <- function(faaCodes) {
   
