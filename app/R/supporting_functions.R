@@ -97,16 +97,17 @@ readAndFormatData <- function(aPathToDataset) {
     mutate(parameter = reorder(parameter, importance))
 }
 
-writeQueryForAirpots <- function(faaCodes) {
+writeDestinationDisplayName <- function(aLookUpTable, aCode) {
   
-  # Write each origin in a quoted list for SQL to understand it
-  faaCodes <- sprintf("(%s)", toString(sprintf("'%s'", faaCodes)))
-  
-  query <- "SELECT faa, name 
-  FROM airports 
-  WHERE faa IN ?faaCodes;"
-  
-  sqlInterpolate(ANSI(), query, faaCodes = SQL(faaCodes))
+  if_else(is.na(unname(aLookUpTable[aCode])),
+          aCode,
+          paste0(unname(aLookUpTable[aCode]), " (", aCode, ")")
+          )
+}
+
+writeQueryForAirpots <- function() {
+  "SELECT faa, name 
+  FROM airports;"
 }
 
 writeQueryForDestinations <- function(anOrigin) {

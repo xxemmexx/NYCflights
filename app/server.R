@@ -165,10 +165,7 @@ server <- function(input, output, session) {
   
   airports <- reactive({
     
-    faaCodes <- flights()$dest %>%
-      unique() 
-    
-    airportLookUpTable <- dbGetQuery(conn, writeQueryForAirpots(faaCodes))
+    airportLookUpTable <- dbGetQuery(conn, writeQueryForAirpots())
     
     airports <- airportLookUpTable$name
     
@@ -184,8 +181,8 @@ server <- function(input, output, session) {
       transmute(sdISO(ymd_hms(time_hour)), 
                 flight, 
                 tailnum, 
-                origin, 
-                destination = unname(airports()[dest])) %>%
+                origin = unname(airports()[origin]), 
+                destination = writeDestinationDisplayName(airports(), dest)) %>%
       datatable(rownames = FALSE,
                 colnames = c('Datum', 'Vluchtnr.', 'Code', 'Van', 'Naar'),
                 selection = "single",
