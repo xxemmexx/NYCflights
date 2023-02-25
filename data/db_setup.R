@@ -33,7 +33,6 @@ dataWeather <- nycflights13::weather
 dfWeather <- dataWeather %>%
   mutate(time_hour = as.character(time_hour))
 
-
 ids <- tibble(flight_id = seq(from = 1, to = nrow(dataFlights)))
 
 dfFlights <- ids %>%
@@ -41,19 +40,9 @@ dfFlights <- ids %>%
   mutate(time_hour = as.character(time_hour)) 
 
 
-
-
-# str(dfFlights)
-# 
-# dfFlights %>%
-#   arrange(desc(year)) %>%
-#   head(10)
-
-
 #-------------------------------------------------------------------------------
 # Load 
 #-------------------------------------------------------------------------------
-
 conn <- dbConnect(RSQLite::SQLite(), dbname = "nyc.sqlite3")
 
 dbExecute(conn, drop_weather_query)

@@ -34,8 +34,8 @@ dataFlights <- fetchData()
 #-------------------------------------------------------------------------------
 # Pre-processing
 #-------------------------------------------------------------------------------
-#str(dataWeather)
 
+# Feature selection
 flightsDataset <- dataFlights %>%
   transmute(origin = as.factor(origin),
             month, 
@@ -55,11 +55,12 @@ flightsDataset <- dataFlights %>%
             arr_delay) %>%
   na.omit()
 
+# Take a small sample of the data to go quicker - at the expense of quality obviously...
 mask <- runif(n = 8000, min = 1, max = 336776) %>% unique() %>% as.integer()
 flightsDataset <- flightsDataset[mask,] %>% na.omit()
 
-#str(flightsDataset)
 
+# Double-check no rows has NA values 
 for(i in 1:ncol(flightsDataset)) {
   
   thisValue <- sum(!complete.cases(flightsDataset[[i]]))
@@ -75,33 +76,17 @@ for(i in 1:ncol(flightsDataset)) {
 #-------------------------------------------------------------------------------
 # Fit
 #-------------------------------------------------------------------------------
-#make this example reproducible
+# Make this example reproducible
 set.seed(1)
 
-#fit the random forest model
+# Fit the random forest model
 vertraging_model <- randomForest(
   formula = arr_delay ~ .,
   data = flightsDataset
 )
 
-#vertraging_model
 #-------------------------------------------------------------------------------
 # Export importance
 #-------------------------------------------------------------------------------
-#produce variable importance plot
-varImpPlot(vertraging_model) 
 
 write.csv2(vertraging_model$importance, "app/data/importance_model_I.csv")
-
-#tune the model
-# model_tuned <- tuneRF(
-#   x=airquality[,-1], #define predictor variables
-#   y=airquality$Ozone, #define response variable
-#   ntreeTry=500,
-#   mtryStart=4, 
-#   stepFactor=1.5,
-#   improve=0.01,
-#   trace=FALSE #don't show real-time progress
-# )
-
-
