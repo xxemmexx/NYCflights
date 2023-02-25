@@ -15,12 +15,12 @@ header <- dashboardHeader(title = tags$li(a(href = 'http://shinyapps.company.com
                                        messageItem(
                                          from = "Wiki fact",
                                          message = "February 3rd, 2023",
-                                         href = "https://en.wikipedia.org/wiki/Super_Bowl_XLVII"
+                                         href = linkSuperBowl
                                        ),
                                        messageItem(
                                          from = "Wiki fact",
                                          message = "February 9th, 2023",
-                                         href = "https://en.wikipedia.org/wiki/February_2013_North_American_blizzard"
+                                         href = linkBlizzard
                                        )),
                           dropdownMenu(type = "notifications",
                                        headerText = "U hebt nieuwe notificaties",
