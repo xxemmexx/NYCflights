@@ -39,6 +39,8 @@ sidebar <- dashboardSidebar(
              tabName = "home_tab"),
     menuItem("Vliegvelddrukte",
              tabName = "drukte_tab"),
+    menuItem("Vertraging",
+             tabName = "vertraging_tab"),
     menuItem("Destinaties",
              tabName = "map_tab"),
     menuItem("Vluchtinformatie",
@@ -84,6 +86,12 @@ body <- dashboardBody(
             # box(width = 9,
             #     DTOutput("occupancy_table") %>% withSpinner())
             ),
+    tabItem(tabName = "vertraging_tab",
+            fluidRow(
+              box(width = 6,
+                  plotOutput("importance_I", height = '35em')
+              )
+            )),
     tabItem(tabName = "map_tab",
             fluidRow(
               box(width = 12,

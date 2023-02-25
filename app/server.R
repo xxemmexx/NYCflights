@@ -2,8 +2,6 @@ server <- function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Vliegvelddrukte
   #-----------------------------------------------------------------------------
-  
-  
   observeEvent(input$date_zoom, {
     if (input$date_zoom[1] > input$date_zoom[2]) {
       showFeedbackDanger("date_zoom",
@@ -102,7 +100,29 @@ server <- function(input, output, session) {
       theme(axis.text.y= element_text(face = "bold", size = 12))
   })
   
-  
+  #-----------------------------------------------------------------------------
+  # Vertraging
+  #-----------------------------------------------------------------------------
+  # output$importance_I_table <- renderTable({
+  # importanceModelI %>%
+  #     mutate(X = fct_reorder(X, IncNodePurity))
+  # })
+    
+  output$importance_I <- renderPlot({
+    importanceModelI %>%
+      mutate(parameter = reorder(parameter, importance)) %>%
+      ggplot(aes(x = parameter, y = importance)) +
+      geom_bar(stat = "identity", fill = defineColours(importanceModelI$importance)) +
+      ggtitle("Invloed parameters") +
+      xlab("") + ylab("") +
+      theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5)) +
+      theme(axis.title.x = element_text(size = 16, face = "bold")) +
+      theme(axis.title.y = element_text(size = 16, face = "bold")) +
+      theme(axis.text.x= element_blank()) +
+      theme(axis.text.y= element_text(face = "bold", size = 12, angle = 15)) +
+      coord_flip()
+      
+  })
   #-----------------------------------------------------------------------------
   # Destinaties
   #-----------------------------------------------------------------------------

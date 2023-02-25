@@ -14,6 +14,19 @@ require(ggplot2)
 sdISO <- stamp_date("2018-09-26", quiet = TRUE)
 localDBPath <- "data/nyc.sqlite3"
 
+# Import feature importance data
+importanceModelI <- read.csv('data/importance_model_I.csv', 
+                             header = TRUE, 
+                             sep = ";", 
+                             dec = ",",
+                             stringsAsFactors = FALSE) %>%
+  as_tibble() %>%
+  transmute(parameter = X %>% as.factor(),
+            importance = IncNodePurity)
+  
+
+
+
 # Connect to database when app is launched
 conn <- dbConnect(RSQLite::SQLite(), dbname = localDBPath)
 

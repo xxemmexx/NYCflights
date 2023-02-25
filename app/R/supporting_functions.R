@@ -13,6 +13,15 @@ computeOccupancy <- function(aDate, numberOfSeats) {
   )
 }
 
+defineColours <- function(aNumber) {
+  case_when(
+    aNumber > 1000000 ~ "#8B0000",
+    aNumber < 1000000 & aNumber > 700000 ~ "#CD853F",
+    TRUE ~ "#6B8E23"
+  )
+  
+}
+
 getTitleForPlot <- function(type = c("occupancy", "capacity"), anOrigin, fromDate, toDate) {
   type <- match.arg(type)
   
