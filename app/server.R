@@ -38,35 +38,6 @@ server <- function(input, output, session) {
     
   })
   
-  # output$occupancy_table <- renderDT({
-  # 
-  #   lengthSeats <- nrow(seats())
-  # 
-  #   seats() %>%
-  #     transmute(origin,
-  #               date = ymd_hms(time_hour) %>% as.Date(),
-  #               dayOfYear = yday(date),
-  #               occupancy = computeOccupancy(date, as.numeric(seats)),
-  #               randomPassengers = floor(runif(n = lengthSeats, min = -50, max = 50)),
-  #               variance = if_else(seats < 56, 0, randomPassengers),
-  #               nettoOccupancy = occupancy + variance,
-  #               percentageCapacity = round(nettoOccupancy/seats*100)) %>%
-  #     group_by(dayOfYear) %>%
-  #     summarise(date = date,
-  #               netto = sum(nettoOccupancy)/100, 
-  #               capacity = mean(percentageCapacity)) %>%
-  #     ungroup() %>%
-  #     distinct() %>%
-  #     datatable(rownames = FALSE,
-  #               #colnames = c('Van', 'Datum', 'Day Index', 'Seats', 'Ran', 'netto', '%'),
-  #               selection = "none",
-  #               class = "compact",
-  #               options = list(scrollX = TRUE,
-  #                              dom = 'tp'
-  #               )
-  #     )
-  # })
-  
   output$occupancy_plot <- renderPlot({
     actualOccupancy() %>%
       ggplot(aes(x = date, y = netto)) +
@@ -167,8 +138,8 @@ server <- function(input, output, session) {
   #-----------------------------------------------------------------------------
   
   originsFilter <- reactive({
-    origins <- origins()$faa
-    mask <- c(input$origin_jfk, input$origin_ewr, input$origin_lga)
+    origins <- origins()$faa %>% sort()
+    mask <- c(input$origin_ewr, input$origin_jfk, input$origin_lga)
     
     origins[mask]
   })
