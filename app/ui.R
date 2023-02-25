@@ -137,7 +137,10 @@ body <- dashboardBody(
                              value = NULL)
             ),
             box(width = 9,
-                DTOutput("flights_table") %>% withSpinner()))
+                DTOutput("flights_table") %>% withSpinner()),
+            tags$script(src = "flights_table_module.js"),
+            tags$script(paste0("flights_table_module_js('')"))
+            )
     ) # Close tabItems
   ) # Close dasboardBody
 

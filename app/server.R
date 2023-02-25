@@ -174,20 +174,40 @@ server <- function(input, output, session) {
     airports
   })
   
+  flights_table_prep <- reactiveVal(NULL)
+  
+  observeEvent(flights(), {
+    
+    ids <- flights()$flight_id
+    
+    actions <- purrr::map_chr(ids, function(id_) {
+      paste0('<div class="btn-group" style="width: 75px;" role="group">
+              <button class="btn btn-primary btn-sm edit_btn" data-toggle="tooltip" data-placement="top" title="Vluchtinfo" id = ', id_, 
+              ' style="margin: 0; background:#2F4F4F"><i class="fa fa-circle-info"></i></button></div>')
+    })
+    
+    flightsTable <- flights() %>%
+      transmute(sdISO(ymd_hms(time_hour)),
+                flight,
+                tailnum,
+                origin = unname(airports()[origin]),
+                destination = writeDestinationDisplayName(airports(), dest))
+    
+    flightsTable <- cbind(tibble(" " = actions), flightsTable)
+    
+    flights_table_prep(flightsTable)
+    
+  })
   
   output$flights_table <- renderDT({
+    req(flights_table_prep())
     
-    flights() %>%
-      transmute(sdISO(ymd_hms(time_hour)), 
-                flight, 
-                tailnum, 
-                origin = unname(airports()[origin]), 
-                destination = writeDestinationDisplayName(airports(), dest)) %>%
+    flights_table_prep() %>%
       datatable(rownames = FALSE,
                 colnames = c('Datum', 'Vluchtnr.', 'Code', 'Van', 'Naar'),
                 selection = "single",
                 class = "compact stripe row-border nowrap",
-                #escape = -1,  # Escape the HTML in all except 1st column (which has the buttons)
+                escape = -1,  # Escape the HTML in all except 1st column (which has the buttons)
                 options = list(scrollX = TRUE,
                                dom = 'ftp',
                                columnDefs = list(list(targets = 0, orderable = FALSE)),
@@ -202,4 +222,19 @@ server <- function(input, output, session) {
                 ) 
     
   })
+  
+  flight <- eventReactive(input$flight_id, {
+    
+    flights() %>%
+      filter(flight_id == input$flight_id)
+    
+  })
+  
+  flightDetailModuleServer("show_details",
+                           modal_title = "Vluchtoverzicht",
+                           flight = flight,
+                           modal_trigger = reactive({input$flight_id})
+                           )
+  
+  
 }

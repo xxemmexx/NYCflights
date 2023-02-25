@@ -9,6 +9,7 @@ require(DBI)
 require(RSQLite)
 require(leaflet)
 require(ggplot2)
+require(purrr)
 
 # Define paths and formats
 sdISO <- stamp_date("2018-09-26", quiet = TRUE)
