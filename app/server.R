@@ -171,10 +171,10 @@ server <- function(input, output, session) {
     preFilteredQuery <- writeQueryForFlightsWithFilters(aFlight = input$flight_number,
                                                         origins = originsFilter())
     
-      dbGetQuery(conn, preFilteredQuery) %>%
-        filter(between(as.Date(ymd_hms(time_hour)), 
-                   ymd(input$date_of_interest[1]), 
-                   ymd(input$date_of_interest[2])))
+    dbGetQuery(conn, preFilteredQuery) %>%
+      filter(between(as.Date(ymd_hms(time_hour)), 
+                     ymd(input$date_of_interest[1]), 
+                     ymd(input$date_of_interest[2])))
   })
   
   airports <- reactive({
