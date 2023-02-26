@@ -222,7 +222,7 @@ server <- function(input, output, session) {
     
     flights_table_display() %>%
       datatable(rownames = FALSE,
-                colnames = c('Datum', 'Vluchtnr.', 'Code', 'Van', 'Naar'),
+                colnames = c('Datum', 'Vluchtnr.', 'Kenteken', 'Van', 'Naar'),
                 selection = "single",
                 class = "compact stripe row-border nowrap",
                 escape = -1,  
