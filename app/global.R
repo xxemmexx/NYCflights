@@ -20,6 +20,7 @@ pathToJFKDataModelII <- "data/importance_model_II_jfk.csv"
 pathToEWRDataModelII <- "data/importance_model_II_ewr.csv"
 linkSuperBowl <- "https://en.wikipedia.org/wiki/Super_Bowl_XLVII"
 linkBlizzard <- "https://en.wikipedia.org/wiki/February_2013_North_American_blizzard"
+linkNZa <- "http://www.nza.nl"
 
 # Connect to database when app is launched
 conn <- dbConnect(RSQLite::SQLite(), dbname = localDBPath)

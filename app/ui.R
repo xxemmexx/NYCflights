@@ -1,11 +1,9 @@
 #-------------------------------------------------------------------------------
 # Header
 #-------------------------------------------------------------------------------
-header <- dashboardHeader(title = tags$li(a(href = 'http://shinyapps.company.com',
-                                            icon("plane"),
-                                            title = "NYCFlights"),
+header <- dashboardHeader(title = tags$li(a(title = "NYCFlights"),
                                           class = "dropdown"),
-                          tags$li(a(href = 'http://www.nza.nl',
+                          tags$li(a(href = linkNZa,
                                     img(src = 'nza-logo.png',
                                         title = "Ga naar NZa", height = "30px"),
                                     style = "padding-top:10px; padding-bottom:10px;"),
