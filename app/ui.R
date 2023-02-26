@@ -71,7 +71,7 @@ body <- dashboardBody(
                                separator = "t/m",
                                language = "nl")),
             box(width = 12,
-                plotOutput("occupancy_plot") %>% withSpinner()),
+                plotOutput("occupancy_plot", height = '24em') %>% withSpinner()),
             box(width = 12,
                 plotOutput("capacity_plot", height = '14em') %>% withSpinner())
             ),
