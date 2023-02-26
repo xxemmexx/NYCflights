@@ -5,7 +5,16 @@ server <- function(input, output, session) {
   observeEvent(input$date_zoom, {
     if (input$date_zoom[1] > input$date_zoom[2]) {
       showFeedbackDanger("date_zoom",
-                         text = "Voorzicht! De volgorde van de daten klopt niet")
+                         text = "Let op: de volgorde van de daten klopt niet!")
+    } else {
+      hideFeedback("date_zoom")
+    }
+  })
+  
+  observeEvent(input$date_zoom, {
+    if (input$date_zoom[1] < ymd('2013-01-01') | input$date_zoom[2] > ymd('2013-12-01')) {
+      showFeedbackDanger("date_zoom",
+                         text = "Let op: alleen data voor het jaar 2013 beschikbaar!")
     } else {
       hideFeedback("date_zoom")
     }
@@ -147,7 +156,16 @@ server <- function(input, output, session) {
   observeEvent(input$date_of_interest, {
     if (input$date_of_interest[1] > input$date_of_interest[2]) {
       showFeedbackDanger("date_of_interest",
-                         text = "Voorzicht! De volgorde van de daten klopt niet")
+                         text = "Let op: de volgorde van de daten klopt niet")
+    } else {
+      hideFeedback("date_of_interest")
+    }
+  })
+  
+  observeEvent(input$date_of_interest, {
+    if (input$date_of_interest[1]  < ymd('2013-01-01') | input$date_of_interest[2] > ymd('2013-12-01')) {
+      showFeedbackDanger("date_of_interest",
+                         text = "Let op: alleen data voor het jaar 2013 beschikbaar!")
     } else {
       hideFeedback("date_of_interest")
     }
