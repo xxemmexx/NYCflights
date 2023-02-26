@@ -36,18 +36,6 @@ kan je het tabelletje in <em>Vluchtinformatie</em> raadplegen. <br>
 </p> <br>
 <p style="text-align:center"><b>Veel plezier!</b></p></h4>'
 
-
-#  <br><br>
-# 
-#   34
-# Welke <b>destinaties</b> je kan bereiken haal je best uit
-# 
-# 35
-# het kaartje in <em>Destinaties</em>.<br><br>
-# 
-#   36
-# En als je nog vragen hebt over <b>individuele vluchten<b>
-
 printTitle <-'<h3 style="text-align:center">Welkom in de NYC Dashboard <h3><br>'
 
 printVertragingText <- '<h4><p><b>Wat bepaald vertraging? </b><br><br> We hebben

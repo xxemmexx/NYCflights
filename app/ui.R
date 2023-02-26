@@ -62,18 +62,24 @@ body <- dashboardBody(
                 tabPanel("",
                          HTML(printGreeting)))),
     tabItem(tabName = "drukte_tab",
-            box(width = 4,
-                background = 'navy',
-                dateRangeInput("date_zoom",
-                               label = "Daten",
-                               start = "2013-01-01",
-                               end = "2013-02-01",
-                               separator = "t/m",
-                               language = "nl")),
-            box(width = 12,
-                plotOutput("occupancy_plot", height = '24em') %>% withSpinner()),
-            box(width = 12,
-                plotOutput("capacity_plot", height = '14em') %>% withSpinner())
+            fluidRow(
+              box(width = 4,
+                  background = 'navy',
+                  dateRangeInput("date_zoom",
+                                 label = "Daten",
+                                 start = "2013-01-01",
+                                 end = "2013-02-01",
+                                 separator = "t/m",
+                                 language = "nl"))
+            ), # Close fluid row
+            fluidRow(
+              box(width = 12,
+                  plotOutput("occupancy_plot", height = '22em') %>% withSpinner())
+            ), # Close fluid row
+            fluidRow(
+              box(width = 12,
+                  plotOutput("capacity_plot", height = '12em') %>% withSpinner())
+              ) # Close fluid row
             ),
     tabItem(tabName = "vertraging_tab",
             fluidRow(
@@ -96,39 +102,43 @@ body <- dashboardBody(
               ) # Close fluid row
     ),
     tabItem(tabName = "flights_tab",
-            box(width = 3,
-                background = 'navy',
-                dateRangeInput("date_of_interest",
-                               label = "Daten",
-                               start = "2013-01-01",
-                               end = "2013-02-01",
-                               separator = "t/m",
-                               language = "nl")),
-            box(width = 3,
-                background = 'navy',
-                HTML('<b>Vliegend vanaf</b>'),
-                checkboxInput("origin_jfk", 
-                              'JFK',
-                              value = FALSE),
-                checkboxInput("origin_lga", 
-                              'La Guardia',
-                              value = TRUE),
-                checkboxInput("origin_ewr", 
-                              'Newark',
-                              value = FALSE)
-            ),
-            box(width = 3,
-                background = 'navy',
-                numericInput("flight_number",
-                             "Vluchtnummer",
-                             min = 1,
-                             value = NULL)
-            ),
-            box(width = 9,
-                DTOutput("flights_table") %>% withSpinner()),
-            tags$script(src = "flights_table_module.js"),
-            tags$script(paste0("flights_table_module_js('')"))
-            )
+            fluidRow(
+              box(width = 3,
+                  background = 'navy',
+                  dateRangeInput("date_of_interest",
+                                 label = "Daten",
+                                 start = "2013-01-01",
+                                 end = "2013-02-01",
+                                 separator = "t/m",
+                                 language = "nl")),
+              box(width = 3,
+                  background = 'navy',
+                  HTML('<b>Vliegend vanaf</b>'),
+                  checkboxInput("origin_jfk", 
+                                'JFK',
+                                value = FALSE),
+                  checkboxInput("origin_lga", 
+                                'La Guardia',
+                                value = TRUE),
+                  checkboxInput("origin_ewr", 
+                                'Newark',
+                                value = FALSE)
+              ),
+              box(width = 3,
+                  background = 'navy',
+                  numericInput("flight_number",
+                               "Vluchtnummer",
+                               min = 1,
+                               value = NULL)
+              )
+            ), # Close fluid row
+            fluidRow(
+              box(width = 9,
+                  DTOutput("flights_table") %>% withSpinner()),
+              tags$script(src = "flights_table_module.js"),
+              tags$script(paste0("flights_table_module_js('')"))
+              )
+            ) # Close fluid row
     ) # Close tabItems
   ) # Close dasboardBody
 

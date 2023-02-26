@@ -48,6 +48,8 @@ server <- function(input, output, session) {
   })
   
   output$occupancy_plot <- renderPlot({
+    req(actualOccupancy(), selectedOrigin())
+    
     actualOccupancy() %>%
       ggplot(aes(x = date, y = netto)) +
       geom_point() + geom_line() +
@@ -64,6 +66,8 @@ server <- function(input, output, session) {
   })
   
   output$capacity_plot <- renderPlot({
+    req(actualOccupancy(), selectedOrigin())
+    
     actualOccupancy() %>%
       distinct() %>%
       ggplot(aes(x = date, y = capacity)) +
@@ -72,7 +76,7 @@ server <- function(input, output, session) {
                               selectedOrigin()$name, 
                               input$date_zoom[1], 
                               input$date_zoom[2])) +
-      xlab("") + ylab("% totale capaciteit") +
+      xlab("") + ylab("% capaciteit") +
       theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5)) +
       theme(axis.title.x = element_text(size = 12, face = "bold")) +
       theme(axis.title.y = element_text(size = 12, face = "bold")) +
@@ -91,6 +95,7 @@ server <- function(input, output, session) {
   })
   
   output$importance_II <- renderPlot({
+    req(input$origin)
     
     input$origin %>%
       getPathForOrigin() %>%
@@ -123,6 +128,7 @@ server <- function(input, output, session) {
   })
   
   output$destinations_map <- renderLeaflet({
+    req(selectedOrigin(), destinations())
     
     leaflet() %>%
       addTiles() %>%
@@ -145,7 +151,6 @@ server <- function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Vluchtinformatie
   #-----------------------------------------------------------------------------
-  
   originsFilter <- reactive({
     origins <- origins()$faa %>% sort()
     mask <- c(input$origin_ewr, input$origin_jfk, input$origin_lga)
@@ -236,8 +241,8 @@ server <- function(input, output, session) {
                                                paginate = list(`next` = 'Volgende',
                                                                previous = 'Vorige'),
                                                search = 'Zoeken: ')
-                               )
-                ) 
+                               ) # Close options list
+                ) # Close datatable 
     
   })
   
