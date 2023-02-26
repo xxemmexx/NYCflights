@@ -53,9 +53,6 @@ sidebar <- dashboardSidebar(
 # Dashboard Body
 #-------------------------------------------------------------------------------
 body <- dashboardBody(
-  tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "stylesheet.css")
-  ),
   useShinyFeedback(),
   tabItems(
     tabItem(tabName = "home_tab",
@@ -77,8 +74,6 @@ body <- dashboardBody(
                 plotOutput("occupancy_plot") %>% withSpinner()),
             box(width = 12,
                 plotOutput("capacity_plot", height = '14em') %>% withSpinner())
-            # box(width = 9,
-            #     DTOutput("occupancy_table") %>% withSpinner())
             ),
     tabItem(tabName = "vertraging_tab",
             fluidRow(
@@ -137,6 +132,9 @@ body <- dashboardBody(
     ) # Close tabItems
   ) # Close dasboardBody
 
+#-------------------------------------------------------------------------------
+# Call UI
+#-------------------------------------------------------------------------------
 ui <- dashboardPage(header = header, 
                     sidebar = sidebar, 
                     body = body, 
