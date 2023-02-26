@@ -1,13 +1,7 @@
 #-------------------------------------------------------------------------------
 # Header
 #-------------------------------------------------------------------------------
-header <- dashboardHeader(title = tags$li(a(title = "NYCFlights"),
-                                          class = "dropdown"),
-                          tags$li(a(href = linkNZa,
-                                    img(src = 'nza-logo.png',
-                                        title = "Ga naar NZa", height = "30px"),
-                                    style = "padding-top:10px; padding-bottom:10px;"),
-                                  class = "dropdown"),
+header <- dashboardHeader(title = "",
                           dropdownMenu(type = "messages",
                                        headerText = "U hebt nieuwe berichtjes",
                                        messageItem(
@@ -20,10 +14,11 @@ header <- dashboardHeader(title = tags$li(a(title = "NYCFlights"),
                                          message = "February 9th, 2023",
                                          href = linkBlizzard
                                        )),
-                          dropdownMenu(type = "notifications",
-                                       headerText = "U hebt nieuwe notificaties",
-                                       notificationItem(text = "App geeft error! Get me out of here!",
-                                                        href = "emme.shinyapps.io/rebozos"))
+                          tags$li(a(href = linkNZa,
+                                    img(src = 'nza-logo.png',
+                                        title = "Ga naar NZa", height = "30px"),
+                                    style = "padding-top:10px; padding-bottom:10px;"),
+                                  class = "dropdown")
   
 )
 

@@ -22,13 +22,31 @@ printFlightCard <- function(aFlight, anOrigin, aDestination) {
 printGreeting <- '<h4><p>Wat fijn dat je er bent! <br><br> In dit dashboard kan je de gegevens van 
 alle vluchten vanuit New York voor het jaar 2013 makkelijk bekijken. Onze analysten
 hebben hun best gedaan om antwoord te geven op de belangrijkste vragen vanuit de business. <br><br>
-Hoe druk is het in de luchthaven van New York? Dit kan je op de tab <em>Vliegvelddrukte</em>
-onderzoeken. Wat zijn de bepalende factoren achter vertragingen? Beschouw het grafiekje
-op de tab <em>Vertragingen</em>. Welke destinaties je kan bereiken haal je best uit
-het kaartje in <em>Destinaties</em>. En als je nog vragen hebt over individuele vluchten
+<b>Hoe druk is het </b> in de luchthaven van New York? Dit kan je op de tab <em>Vliegvelddrukte</em>
+onderzoeken. Je ziet er twee grafiekjes: het ene geeft het aantal passagiers weer terwijl je op
+het tweede de relatieve capaciteit van elk vliegveld kunt zien. <br><br>
+Wat zijn de bepalende factoren achter <b>vertragingen</b>? Beschouw de grafiekjes die 
+onze verschillende analystenteams hebben opgesteld! Een team focusseerde op vertragingen 
+tijdens het vertrek, het andere op vertragingen in aankomst. Beide hebben de resultaten 
+van hun ML analyse op de tab <em>Vertragingen</em> staan. <br><br> 
+Welke <b>destinaties</b> je kan bereiken haal je best uit
+het kaartje in <em>Destinaties</em>. <br><br>
+En als je nog vragen hebt over <b>individuele vluchten</b>
 kan je het tabelletje in <em>Vluchtinformatie</em> raadplegen. <br>
 </p> <br>
 <p style="text-align:center"><b>Veel plezier!</b></p></h4>'
+
+
+#  <br><br>
+# 
+#   34
+# Welke <b>destinaties</b> je kan bereiken haal je best uit
+# 
+# 35
+# het kaartje in <em>Destinaties</em>.<br><br>
+# 
+#   36
+# En als je nog vragen hebt over <b>individuele vluchten<b>
 
 printTitle <-'<h3 style="text-align:center">Welkom in de NYC Dashboard <h3><br>'
 
