@@ -1,4 +1,10 @@
-printTitle <-'<h3 style="text-align:center">Welkom in de NYC Dashboard <h3><br>'
+printFlightCard <- function(aFlight) {
+  paste0('<h1 style=text-align:center;><b>Vlucht ', 
+         aFlight$carrier, " ", aFlight$flight, '</b></h1><br><br>
+         <h4 style=text-align:left;><i class="fa fa-plane-departure"></i> - Vertrek</h4>
+         <hr>
+         <h4 style=text-align:left;><i class="fa fa-plane-arrival"></i> - Aankomst</h4>')
+}
 
 printGreeting <- '<h4><p>Wat fijn dat je er bent! <br><br> In dit dashboard kan je de gegevens van 
 alle vluchten vanuit New York voor het jaar 2013 makkelijk bekijken. Onze analysten
@@ -10,6 +16,8 @@ het kaartje in <em>Destinaties</em>. En als je nog vragen hebt over individuele 
 kan je het tabelletje in <em>Vluchtinformatie</em> raadplegen. <br>
 </p> <br>
 <p style="text-align:center"><b>Veel plezier!</b></p></h4>'
+
+printTitle <-'<h3 style="text-align:center">Welkom in de NYC Dashboard <h3><br>'
 
 printVertragingText <- '<h4><p><b>Wat bepaald vertraging? </b><br><br> We hebben
 twee teams van analysten gevraagd om na te gaan welke parameters vluchtvertragingen

@@ -82,8 +82,9 @@ interpolateFlightsQuery <- function(aQuery,
 }
 
 jsHeader <- JS("function(settings, json) {",
-               "$(this.api().table().header()).css({'background-color': '#2F4F4F', 'color': '#FFF0F5'});",
+               "$(this.api().table().header()).css({'background-color':'#2F4F4F','color': '#FFF0F5'});",
                "}")
+
 
 readAndFormatData <- function(aPathToDataset) {
   read.csv(aPathToDataset, 
