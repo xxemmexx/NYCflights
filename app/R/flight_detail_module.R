@@ -1,8 +1,20 @@
+#' Flights details Module
+#'
+#' Module displaying detailed information of flights
+#'
+#' @param modalTitle string - the title for the modal dialog
+#' @param flight reactive containing a row of the flights data frame
+#' @param airports named vector used as a look-up table for full airport names
+#' @param modalTrigger reactive trigger to open the modal dialog
+#'
+#' @return None
+#'
+#'
 flightDetailModuleServer <- function(id, 
-                                     modal_title, 
+                                     modalTitle, 
                                      flight,
                                      airports,
-                                     modal_trigger) {
+                                     modalTrigger) {
   
   moduleServer(id, 
                function(input, output, session) {
@@ -15,7 +27,7 @@ flightDetailModuleServer <- function(id,
                    writeDestinationDisplayName(airports, flight()$dest)
                  })
                  
-                 observeEvent(modal_trigger(), {
+                 observeEvent(modalTrigger(), {
                    showModal(
                      modalDialog(
                        div(style = "padding: 30px;",
@@ -25,7 +37,7 @@ flightDetailModuleServer <- function(id,
                              
                              ) # Close fluid row
                            ), # Close div
-                       title = modal_title,
+                       title = modalTitle,
                        size = 'm',
                        footer = list(modalButton('Sluiten')) 
                      ) # Close modal dialog

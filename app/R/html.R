@@ -1,3 +1,9 @@
+#' @param aFlight character vector containing a number of properties of a flight (sched_dep_time, sched_arr_time...)
+#' @param anOrigin string - full name of an airport
+#' @param aDestination string - full name of an airport
+#'
+#' @return string - HTML text that can be directly used as "flight card"
+#' 
 printFlightCard <- function(aFlight, anOrigin, aDestination) {
   paste0('<h1 style=text-align:center;><b>Vlucht ', 
          aFlight$carrier, " ", aFlight$flight, '</b></h1>

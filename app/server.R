@@ -254,9 +254,9 @@ server <- function(input, output, session) {
   })
   
   flightDetailModuleServer("show_details",
-                           modal_title = "Vluchtoverzicht",
+                           modalTitle = "Vluchtoverzicht",
                            flight = flight,
                            airports = airports(),
-                           modal_trigger = reactive({input$flight_id})
+                           modalTrigger = reactive({input$flight_id})
                            )
 }
