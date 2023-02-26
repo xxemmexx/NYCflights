@@ -1,9 +1,22 @@
-printFlightCard <- function(aFlight) {
+printFlightCard <- function(aFlight, anOrigin, aDestination) {
   paste0('<h1 style=text-align:center;><b>Vlucht ', 
-         aFlight$carrier, " ", aFlight$flight, '</b></h1><br><br>
-         <h4 style=text-align:left;><i class="fa fa-plane-departure"></i> - Vertrek</h4>
+         aFlight$carrier, " ", aFlight$flight, '</b></h1>
+         <span><h3 style=text-align:center;> Kenteken: ', aFlight$tailnum,'</h3></span><br><br>
+         
+         <h4 style=text-align:left;><i class="fa fa-plane-departure"></i> - Vertrek </h4><br>
+         
+         <h5><b>Vanaf: ', anOrigin, '</b><br><br>
+         Ingepland: ', convertIntegerToTimeLabel(aFlight$sched_dep_time),'<br>
+         Vertraging: ', displayDelay(aFlight$dep_delay),'
          <hr>
-         <h4 style=text-align:left;><i class="fa fa-plane-arrival"></i> - Aankomst</h4>')
+         <h4 style=text-align:left;><i class="fa fa-plane-arrival"></i> - Aankomst </h4><br>
+         <b>In: ', aDestination, '</b><br><br>
+         Ingepland: ', convertIntegerToTimeLabel(aFlight$sched_arr_time),'<br>
+         Vertraging: ', displayDelay(aFlight$arr_delay),'</h5><br><br><br><br>
+         
+         Totale afstand: ', displayDistanceInKms(aFlight$distance), '
+         
+         </h4>')
 }
 
 printGreeting <- '<h4><p>Wat fijn dat je er bent! <br><br> In dit dashboard kan je de gegevens van 

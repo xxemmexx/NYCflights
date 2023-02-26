@@ -1,3 +1,17 @@
+convertIntegerToTimeLabel <- function(anInteger) {
+
+  charactersList <- strsplit(as.character(anInteger), NULL)[[1]]
+  lengthOfExpr <- length(charactersList)
+  
+  reversedList <- rev(charactersList)
+  
+  timeLabelList <- rev(c(reversedList[1:2], ":", reversedList[3:lengthOfExpr]))
+  
+  timeLabel <- paste(timeLabelList, collapse = '')
+  
+  paste0(timeLabel, " uur")
+}
+
 computeOccupancy <- function(aDate, numberOfSeats) {
   case_when(
     aDate == ymd('2013-01-31') | aDate == ymd('2013-02-06') ~ floor(.88*numberOfSeats),
@@ -19,7 +33,25 @@ defineColours <- function(aNumber) {
     aNumber < 1000000 & aNumber > 550000 ~ "#CD853F",
     TRUE ~ "#6B8E23"
   )
+}
+
+displayDelay <- function(anInteger) {
   
+  if_else(anInteger >= 0, 
+          paste0('<span style="color:#008000"> + ', anInteger,' mins</span>'),
+          paste0('<span style="color:#B22222"> ', anInteger,' mins</span>'))
+}
+
+displayDistanceInKms <- function(aDistanceInMiles) {
+  
+  distanceInKms <- aDistanceInMiles*1.609344
+  
+  timeIfVelocityThatOfSound <- distanceInKms/1234.8
+  
+  paste0(as.character(round(distanceInKms,digits = 2)), 
+         ' kms. (', 
+         round(timeIfVelocityThatOfSound, digits = 2),
+         ' uur met geluidssnelheid)')
 }
 
 generateImportancePlot <- function(aDataset) {
